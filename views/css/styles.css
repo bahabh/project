@@ -3,7 +3,7 @@
 }
 
 body {
-    background: #020A1B;
+    background: rgb(2, 17, 27);
     color: #ffffff;
     font-family: 'Merriweather', sans-serif;
 }
@@ -19,7 +19,7 @@ p {
 }
 
 .jumbotron {
-    background: #FFD700;
+    background: rgb(255, 153, 0);
     color: white;
     text-align: center;
 }
