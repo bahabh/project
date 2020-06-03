@@ -1,4 +1,11 @@
-image: docker:stable
+# image: docker:stable
+
+before_script:
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  
+cache:
+  paths:
+  - node_modules/
 
 stages:
   - build
@@ -8,11 +15,8 @@ build:
   stage: build
   script:
     - echo "Building the app"
-    - composer.phar install
-    - docker build -t myproject/myapp .
-    - docker tag myproject/myapp:latest \
-      registry.loc/myproject/myapp:$CI_COMMIT_REF_NAME
-    - docker push registry.loc/myproject/myapp:$CI_COMMIT_REF_NAME
+    - docker build -t $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF .
+    - docker push $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
   only:
   - master
   tags:
@@ -24,16 +28,14 @@ deploy_dev:
     GIT_STRATEGY: none
   script:
     - echo "Deploy to dev.loc"
-    - docker pull registry.loc/myproject/myapp:$CI_COMMIT_REF_NAME
+    - docker pull $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
     - docker stop reviewapp-demo-$CI_COMMIT_REF_NAME || true
     - docker rm reviewapp-demo-$CI_COMMIT_REF_NAME || true
-    - docker run -d -P -l traefik.enable=true \
-      -l traefik.frontend.rule=Host:reviewapp.dev.loc \
-      -l traefik.protocol=http --name reviewapp-demo-$CI_COMMIT_REF_NAME \
-      registry.loc/myproject/myapp:$CI_COMMIT_REF_NAME
+    - docker run -p 80:8080 -d --name reviewapp-demo-$CI_COMMIT_REF_NAME \
+      $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
   environment:
     name: dev
-    url: http://reviewapp.dev.loc
+    url: http://docker:80
   only:
   - master
   tags:
