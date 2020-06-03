@@ -32,6 +32,7 @@ deploy_dev:
     - docker stop reviewapp-demo-$CI_COMMIT_REF_NAME || true
     - docker rm reviewapp-demo-$CI_COMMIT_REF_NAME || true
     - docker run -p 90:8080 -d --name reviewapp-demo-$CI_COMMIT_REF_NAME $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
+    - curl http://docker:90
   environment:
     name: dev
     url: http://docker:90
