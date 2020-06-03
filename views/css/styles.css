@@ -3,7 +3,7 @@
 }
 
 body {
-    background: rgb(2, 17, 27);
+    background: #00008b ;
     color: #ffffff;
     font-family: 'Merriweather', sans-serif;
 }
@@ -31,7 +31,7 @@ p {
 
 .btn-primary {
     color: #fff;
-    text-color: #000000;
+    text-color: #008000;
     border-color: white;
     margin-bottom: 5px;
 }
