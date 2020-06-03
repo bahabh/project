@@ -15,7 +15,7 @@ build:
   stage: build
   script:
     - echo "Building the app"
-    - docker build -t tanuki.app
+    - docker build -t tanuki.app .
     - docker tag tanuki.app:latest $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
     - docker push $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
   only:
