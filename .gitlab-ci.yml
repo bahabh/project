@@ -31,11 +31,11 @@ deploy_dev:
     - docker pull $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
     - docker stop reviewapp-demo-$CI_COMMIT_REF_NAME || true
     - docker rm reviewapp-demo-$CI_COMMIT_REF_NAME || true
-    - docker run -p 90:8080 -d --name reviewapp-demo-$CI_COMMIT_REF_NAME $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
-    - curl http://docker:90
+    - docker run -p 127.0.0.1:90:8080/tcp -d --name reviewapp-demo-$CI_COMMIT_REF_NAME $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
+    - curl http://127.0.0.1:90
   environment:
     name: dev
-    url: http://docker:90
+    url: http://127.0.0.1:90
   only:
   - master
   tags:
