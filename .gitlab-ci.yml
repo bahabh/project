@@ -28,7 +28,7 @@ deploy_dev:
   variables:
     GIT_STRATEGY: none
   script:
-    - echo "Deploy to dev.loc"
+    - echo "Deploy to localhost:90"
     - docker pull $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
     - docker stop reviewapp-demo-$CI_COMMIT_REF_NAME || true
     - docker rm reviewapp-demo-$CI_COMMIT_REF_NAME || true
