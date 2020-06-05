@@ -10,6 +10,7 @@ cache:
 stages:
   - build
   - deploy
+  - cleanup
 
 build:
   stage: build
