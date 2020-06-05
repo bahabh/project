@@ -10,6 +10,7 @@ cache:
 stages:
   - build
   - deploy
+  - cleanup
 
 build:
   stage: build
@@ -53,5 +54,19 @@ undeploy_dev:
   environment:
     name: dev
     action: stop
+  tags:
+    - shell
+
+cleanup:
+  stage: cleanup
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - echo "Remove images from runner"
+    - docker rmi tanuki.app || true
+    - docker rmi registry.gitlab.com/mark.cesario/demos/docker-review-app/master || true
+    - echo "Remove images from GitLab registry"
+    - docker rmi $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF || true
+  when: manual
   tags:
     - shell
