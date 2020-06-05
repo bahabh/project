@@ -65,7 +65,7 @@ cleanup:
     - docker rmi tanuki.app || true
     - docker rmi registry.gitlab.com/mark.cesario/demos/docker-review-app/master || true
     - echo "Remove images from GitLab registry"
-    - docker rmi reviewapp-demo-$CI_COMMIT_REF_NAME || true
+    - docker rmi $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF || true
   when: manual
   tags:
     - shell
