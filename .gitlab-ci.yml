@@ -31,6 +31,7 @@ deploy_review:
     - echo "Deploy to localhost:${PORT}"
     - docker pull $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
     - docker stop reviewapp-demo-$CI_COMMIT_REF_NAME || true
+    - docker rm reviewapp-demo-$CI_COMMIT_REF_NAME
     - docker run -p 127.0.0.1:$PORT:8080/tcp -d --name reviewapp-demo-$CI_COMMIT_REF_NAME $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
   environment:
     name: review/$CI_COMMIT_REF_NAME
@@ -53,6 +54,7 @@ deploy_prod:
     - echo "Deploy to localhost:${PORT}"
     - docker pull $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
     - docker stop prod-demo-$CI_COMMIT_REF_NAME || true
+    - docker rm prod-demo-$CI_COMMIT_REF_NAME    
     - docker run -p 127.0.0.1:$PORT:8080/tcp -d --name prod-demo-$CI_COMMIT_REF_NAME $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
   when: manual
   environment:
@@ -71,6 +73,7 @@ undeploy_prod:
     - echo "Remove prod app from production"
     - docker rmi tanuki.app:latest || true
     - docker stop prod-demo-$CI_COMMIT_REF_NAME || true
+    - docker rm prod-demo-$CI_COMMIT_REF_NAME    
     - docker rmi $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF  || true
   when: manual
   only:
@@ -99,3 +102,4 @@ stop_review:
     - echo "Remove images from runner"
     - docker rmi tanuki.app:latest || true
     - docker rmi $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF || true
+    - docker rm reviewapp-demo-$CI_COMMIT_REF_NAME 
