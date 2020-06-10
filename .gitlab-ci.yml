@@ -22,7 +22,7 @@ build:
   tags:
     - shell
   only:
-    merge_request
+    - merge_request
 
 deploy_review:
   stage: ✅ review
@@ -46,7 +46,7 @@ deploy_review:
   tags:
     - shell
   only:
-    merge_request
+    - merge_request
     
 
 deploy_prod:
@@ -69,7 +69,7 @@ deploy_prod:
   tags:
     - shell
   only:
-    merge_request
+    - merge_request
 
 undeploy_prod:
   stage: 📄 cleanup
@@ -90,7 +90,7 @@ undeploy_prod:
   tags:
     - shell
   only:
-    merge_request
+    - merge_request
 
 stop_review:
   stage: 📄 cleanup
@@ -113,4 +113,4 @@ stop_review:
     - docker stop reviewapp-demo-$CI_COMMIT_REF_NAME  || true
     - docker rm reviewapp-demo-$CI_COMMIT_REF_NAME  || true
   only:
-    merge_request
+   -  merge_request
