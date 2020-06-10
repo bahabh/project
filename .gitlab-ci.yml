@@ -21,6 +21,8 @@ build:
     - docker push $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
   tags:
     - shell
+  only:
+    - merge_request
 
 deploy_review:
   stage: ✅ review
@@ -39,13 +41,12 @@ deploy_review:
     on_stop: stop_review
   only:
   - branches
+  - merge_request
   except:
   - master
   tags:
     - shell
-  only:
-    - merge_request
-    
+
 
 deploy_prod:
   stage: 🚀 production
@@ -64,6 +65,7 @@ deploy_prod:
     url: http://127.0.0.1:$PORT
   only:
   - master
+  - merge_request
   tags:
     - shell
 
@@ -80,6 +82,7 @@ undeploy_prod:
   when: manual
   only:
   - master
+  - merge_request
   environment:
     name: production
     action: stop
