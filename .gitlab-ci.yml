@@ -86,7 +86,7 @@ undeploy_prod:
 stop_review:
   stage: cleanup
   variables:
-  GIT_STRATEGY: none
+    GIT_STRATEGY: none
   when: manual
   only:
   - branches
