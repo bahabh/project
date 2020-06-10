@@ -9,7 +9,8 @@ cache:
 
 stages:
   - build
-  - deploy
+  - review
+  - production
   - cleanup
 
 build:
@@ -19,31 +20,54 @@ build:
     - docker build -t tanuki.app .
     - docker tag tanuki.app:latest $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
     - docker push $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
-  only:
-  - master
   tags:
     - shell
 
-deploy_dev:
-  stage: deploy
+deploy_review:
+  stage: review
   variables:
     GIT_STRATEGY: none
+    PORT: 90
   script:
-    - echo "Deploy to localhost:90"
+    - echo "Deploy to localhost:${PORT}"
     - docker pull $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
     - docker stop reviewapp-demo-$CI_COMMIT_REF_NAME || true
     - docker rm reviewapp-demo-$CI_COMMIT_REF_NAME || true
-    - docker run -p 127.0.0.1:90:8080/tcp -d --name reviewapp-demo-$CI_COMMIT_REF_NAME $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
+    - docker run -p 127.0.0.1:$PORT:8080/tcp -d --name reviewapp-demo-$CI_COMMIT_REF_NAME $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
   environment:
-    name: dev
-    url: http://127.0.0.1:90
+    name: review/$CI_COMMIT_REF_NAME
+    url: http://127.0.0.1:$PORT
+    on_stop: stop_review
+  only:
+  - branches
+  except:
+  - master
+  tags:
+    - shell
+    
+
+deploy_prod:
+  stage: production
+  variables:
+    GIT_STRATEGY: none
+    PORT: 91
+  script:
+    - echo "Deploy to localhost:${PORT}"
+    - docker pull $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
+    - docker stop reviewapp-demo-$CI_COMMIT_REF_NAME || true
+    - docker rm reviewapp-demo-$CI_COMMIT_REF_NAME || true
+    - docker run -p 127.0.0.1:$PORT:8080/tcp -d --name reviewapp-demo-$CI_COMMIT_REF_NAME $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
+  when: manual
+  environment:
+    name: production
+    url: http://127.0.0.1:$PORT
   only:
   - master
   tags:
     - shell
 
-undeploy_dev:
-  stage: deploy
+undeploy_prod:
+  stage: cleanup
   variables:
     GIT_STRATEGY: none
   script:
@@ -51,22 +75,31 @@ undeploy_dev:
     - docker stop reviewapp-demo-$CI_COMMIT_REF_NAME || true
     - docker rm reviewapp-demo-$CI_COMMIT_REF_NAME || true
   when: manual
+  only:
+  - master
   environment:
-    name: dev
+    name: production
     action: stop
   tags:
     - shell
 
-cleanup:
+stop_review:
   stage: cleanup
   variables:
     GIT_STRATEGY: none
+  when: manual
+  only:
+  - branches
+  except:
+  - master
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    action: stop
+  tags:
+    - shell
   script:
     - echo "Remove images from runner"
     - docker rmi tanuki.app || true
     - docker rmi registry.gitlab.com/mark.cesario/demos/docker-review-app/master || true
     - echo "Remove images from GitLab registry"
     - docker rmi $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF || true
-  when: manual
-  tags:
-    - shell
