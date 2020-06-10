@@ -21,6 +21,8 @@ build:
     - docker push $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
   tags:
     - shell
+  only:
+    - merge_request
 
 deploy_review:
   stage: ✅ review
@@ -43,6 +45,8 @@ deploy_review:
   - master
   tags:
     - shell
+  only:
+    - merge_request
     
 
 deploy_prod:
@@ -64,6 +68,8 @@ deploy_prod:
   - master
   tags:
     - shell
+  only:
+    - merge_request
 
 undeploy_prod:
   stage: 📄 cleanup
@@ -83,6 +89,8 @@ undeploy_prod:
     action: stop
   tags:
     - shell
+  only:
+    - merge_request
 
 stop_review:
   stage: 📄 cleanup
@@ -102,4 +110,7 @@ stop_review:
     - echo "Remove images from runner"
     - docker rmi tanuki.app:latest || true
     - docker rmi -f $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF || true
+    - docker stop reviewapp-demo-$CI_COMMIT_REF_NAME  || true
     - docker rm reviewapp-demo-$CI_COMMIT_REF_NAME  || true
+  only:
+   -  merge_request
