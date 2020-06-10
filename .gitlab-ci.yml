@@ -40,7 +40,7 @@ deploy_review:
     on_stop: stop_review
   only:
   - branches
-  excpet:
+  except:
   - master
   tags:
     - shell
