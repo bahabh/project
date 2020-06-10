@@ -68,8 +68,6 @@ deploy_prod:
   - master
   tags:
     - shell
-  only:
-    - merge_request
 
 undeploy_prod:
   stage: 📄 cleanup
@@ -89,8 +87,6 @@ undeploy_prod:
     action: stop
   tags:
     - shell
-  only:
-    - merge_request
 
 stop_review:
   stage: 📄 cleanup
