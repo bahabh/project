@@ -8,13 +8,20 @@ cache:
   - node_modules/
 
 stages:
-  - build
-  - review
-  - production
-  - cleanup
+  - 📦 build
+  - ✅ review
+  - 🚀 production
+  - 📄 cleanup
+  
+ .deploy_template: &template
+    - echo "Deploy to localhost:${PORT}"
+    - docker pull $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
+    - docker stop reviewapp-demo-$CI_COMMIT_REF_NAME || true
+    - docker rm reviewapp-demo-$CI_COMMIT_REF_NAME || true
+    - docker run -p 127.0.0.1:$PORT:8080/tcp -d --name reviewapp-demo-$CI_COMMIT_REF_NAME $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
 
 build:
-  stage: build
+  stage: 📦 build
   script:
     - echo "Building the app"
     - docker build -t tanuki.app .
@@ -24,16 +31,12 @@ build:
     - shell
 
 deploy_review:
-  stage: review
+  stage: ✅ review
   variables:
     GIT_STRATEGY: none
     PORT: 90
   script:
-    - echo "Deploy to localhost:${PORT}"
-    - docker pull $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
-    - docker stop reviewapp-demo-$CI_COMMIT_REF_NAME || true
-    - docker rm reviewapp-demo-$CI_COMMIT_REF_NAME || true
-    - docker run -p 127.0.0.1:$PORT:8080/tcp -d --name reviewapp-demo-$CI_COMMIT_REF_NAME $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
+    <<: *template
   environment:
     name: review/$CI_COMMIT_REF_NAME
     url: http://127.0.0.1:$PORT
@@ -47,16 +50,12 @@ deploy_review:
     
 
 deploy_prod:
-  stage: production
+  stage: 🚀 production
   variables:
     GIT_STRATEGY: none
     PORT: 91
   script:
-    - echo "Deploy to localhost:${PORT}"
-    - docker pull $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
-    - docker stop reviewapp-demo-$CI_COMMIT_REF_NAME || true
-    - docker rm reviewapp-demo-$CI_COMMIT_REF_NAME || true
-    - docker run -p 127.0.0.1:$PORT:8080/tcp -d --name reviewapp-demo-$CI_COMMIT_REF_NAME $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
+    <<: *template
   when: manual
   environment:
     name: production
@@ -67,7 +66,7 @@ deploy_prod:
     - shell
 
 undeploy_prod:
-  stage: cleanup
+  stage: 📄 cleanup
   variables:
     GIT_STRATEGY: none
   script:
@@ -84,7 +83,7 @@ undeploy_prod:
     - shell
 
 stop_review:
-  stage: cleanup
+  stage: 📄 cleanup
   variables:
     GIT_STRATEGY: none
   when: manual
