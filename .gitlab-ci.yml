@@ -23,6 +23,8 @@ build:
     - shell
   only:
     - merge_request
+  except:
+    - master
 
 deploy_review:
   stage: ✅ review
