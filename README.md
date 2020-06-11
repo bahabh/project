@@ -17,9 +17,10 @@ Prerequsites
 ------
 
 - Export/clone [project](https://gitlab.com/mark.cesario/demos/docker-review-app)
-- Docker installed and running on your laptop
-- Add GitLab Shell Executor Runner on your laptop to your project
-- Review both Dockerfile and .gitlab-ci.yml files
+- Instal Docker where you will install the GitLab Runner
+- Install the  Shell Executor Runner on your endpointy (in my case on my Macbook)
+- Review both the Dockerfile and .gitlab-ci.yml files
+- Have both the GitLab project and terminal window opens as you demonstrate the shell-based Docker Review Appp demo
 
 
 
