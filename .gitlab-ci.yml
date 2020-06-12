@@ -21,8 +21,6 @@ build:
     - docker push $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
   tags:
     - shell
-  only:
-    - merge_request
 
 deploy_review:
   stage: ✅ review
