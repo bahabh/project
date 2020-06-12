@@ -1,3 +1,8 @@
+workflow:
+  rules:
+    - branch: master
+    - merge_request: yes
+
 before_script:
 # log into GitLab Container registry
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
@@ -39,11 +44,13 @@ deploy_review:
     name: review/$CI_COMMIT_REF_NAME
     url: http://127.0.0.1:$PORT
     on_stop: stop_review
-  only:
-  - branches
-  - merge_request
-  except:
-  - master
+  rules:
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME != "master"'
+#  only:
+#  - branches
+#  - merge_request
+#  except:
+#  - master
   tags:
     - shell
 
@@ -63,9 +70,11 @@ deploy_prod:
   environment:
     name: production
     url: http://127.0.0.1:$PORT
+  rules:
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
   only:
-  - master
-  - merge_request
+#  - master
+#  - merge_request
   tags:
     - shell
 
@@ -80,9 +89,11 @@ undeploy_prod:
     - docker rm prod-demo-$CI_COMMIT_REF_NAME || true
     - docker rmi -f $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF  || true
   when: manual
+  rules:
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
   only:
-  - master
-  - merge_request
+#  - master
+#  - merge_request
   environment:
     name: production
     action: stop
@@ -94,11 +105,13 @@ stop_review:
   variables:
     GIT_STRATEGY: none
   when: manual
-  only:
-  - branches
-  - merge_request
-  except:
-  - master
+  rules:
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME != "master"'
+#  only:
+#  - branches
+#  - merge_request
+#  except:
+#  - master
   environment:
     name: review/$CI_COMMIT_REF_NAME
     action: stop
