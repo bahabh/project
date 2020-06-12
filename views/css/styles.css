@@ -19,7 +19,7 @@ p {
 }
 
 .jumbotron {
-    background: rgb(255, 153, 0);
+    background: green;
     color: white;
     text-align: center;
 }
