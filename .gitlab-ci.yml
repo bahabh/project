@@ -1,5 +1,4 @@
 
-
 before_script:
 # log into GitLab Container registry
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
@@ -44,7 +43,7 @@ deploy_review:
     url: http://127.0.0.1:$PORT
     on_stop: stop_review
   rules:
-    - if: 'CI_COMMIT_REF_NAME != "master"'
+    - if: '$CI_COMMIT_REF_NAME != "master"'
 #  only:
 #  - branches
 #  - merge_request
@@ -69,7 +68,7 @@ deploy_prod:
     name: production
     url: http://127.0.0.1:$PORT
   rules:
-    - if: 'CI_COMMIT_REF_NAME == "master"'
+    - if: '$CI_COMMIT_REF_NAME == "master"'
       when: manual
 #  only:
 #  - master
@@ -88,7 +87,7 @@ undeploy_prod:
     - docker rm prod-demo-$CI_COMMIT_REF_NAME || true
     - docker rmi -f $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF  || true
   rules:
-    - if: 'CI_COMMIT_REF_NAME == "master"'
+    - if: '$CI_COMMIT_REF_NAME == "master"'
       when: manual
 #  only:
 #  - master
