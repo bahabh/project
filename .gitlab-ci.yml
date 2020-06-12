@@ -1,4 +1,3 @@
-
 before_script:
 # log into GitLab Container registry
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
@@ -42,11 +41,6 @@ deploy_review:
     on_stop: stop_review
   rules:
     - if: '$CI_COMMIT_REF_NAME != "master"'
-#  only:
-#  - branches
-#  - merge_request
-#  except:
-#  - master
   tags:
     - shell
 
@@ -68,9 +62,6 @@ deploy_prod:
   rules:
     - if: '$CI_COMMIT_REF_NAME == "master"'
       when: manual
-#  only:
-#  - master
-#  - merge_request
   tags:
     - shell
 
@@ -87,9 +78,6 @@ undeploy_prod:
   rules:
     - if: '$CI_COMMIT_REF_NAME == "master"'
       when: manual
-#  only:
-#  - master
-#  - merge_request
   environment:
     name: production
     action: stop
@@ -103,11 +91,6 @@ stop_review:
   rules:
     - if: '$CI_COMMIT_REF_NAME != "master"'
       when: manual
-#  only:
-#  - branches
-#  - merge_request
-#  except:
-#  - master
   environment:
     name: review/$CI_COMMIT_REF_NAME
     action: stop
@@ -116,6 +99,5 @@ stop_review:
   script:
     - echo "Remove images from runner"
     - docker rmi tanuki.app:latest || true
-    - docker rmi -f $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF || true
     - docker stop reviewapp-demo-$CI_COMMIT_REF_NAME  || true
     - docker rm reviewapp-demo-$CI_COMMIT_REF_NAME  || true
