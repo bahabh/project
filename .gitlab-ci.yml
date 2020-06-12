@@ -20,8 +20,6 @@ build:
     - docker build -t tanuki.app .
     - docker tag tanuki.app:latest $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
     - docker push $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
-    - echo "Merge Request Target Branch Name => ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}"
-        - echo "Merge Request Target Branch Name => ${CI_COMMIT_REF_NAME}"
   tags:
     - shell
   only:
