@@ -1,8 +1,10 @@
-This is an example of a non-k8s GitLab project that uses a macOS based Shell Runner that had Docker running.
+This is a GitLab project using Docker containers, instead of a Kubernetes-based project, to demonstrate how to deploy a review app.  This project uses a Shell Executor Runner and can be run from your laptop.
 
-The .gitlab-ci-yml demonstrates how to deploy a review app without k8s in a shell-based, docker runner.
 
-Registries include:
+
+Registries used include:
+
+------
 
 - DockerHub
 - local docker container
@@ -16,17 +18,17 @@ Prerequsites
 
 ------
 
-- Export/clone [project](https://gitlab.com/mark.cesario/demos/docker-review-app)
+- Export/clone this [project](https://gitlab.com/mark.cesario/demos/docker-review-app)
+- Install a  Shell Executor Runner on your endpointy (in my case my Macbook)
 - Instal Docker where you will install the GitLab Runner
-- Install the  Shell Executor Runner on your endpointy (in my case on my Macbook)
 - Review both the Dockerfile and .gitlab-ci.yml files
 - Have both the GitLab project and terminal window opens as you demonstrate the shell-based Docker Review Appp demo
+  
+  
 
+Future Additions
 
-
-To Dos ----
-
-- [ ] Operations | Environments | dev | Monitoring : Add metrics for review app (not sure how to do this since it's a docker container in my macbook.
-
-- [ ] Operations | Environments | dev | Terminal : Need to fix so you drive in to the macbook docker review instance.
-
+- [ ] Include Code Quality
+- [ ] Include Container Scanning
+- [ ] Add metrics for review app (not sure how to do this since it's a docker container on my Macbook.
+- [ ] Fix terminal icon to be able to drive in to the macbook docker review instance.
