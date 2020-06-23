@@ -77,7 +77,8 @@ undeploy_prod:
     - docker rmi tanuki.app:latest || true
     - docker stop prod-demo-$CI_COMMIT_REF_NAME || true
     - docker rm prod-demo-$CI_COMMIT_REF_NAME || true
-    - docker rmi -f $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF  || true
+#    - docker rmi -f $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF  || true
+    - docker rmi -f $(docker images -q)
   rules:
     - if: '$CI_COMMIT_REF_NAME == "master"'
       when: manual
