@@ -50,7 +50,7 @@ code_quality:
       codequality: gl-code-quality-report.json
     expire_in: 1 week
   rules:
-    - if: '$CI_COMMIT_REF_NAME != "master" || $CI_COMMIT_REF_NAME == "master"
+    - if: '$CI_COMMIT_REF_NAME != "master" || $CI_COMMIT_REF_NAME == "master"'
   tags:
     - shell
 
