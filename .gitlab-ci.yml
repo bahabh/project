@@ -37,7 +37,6 @@ code_quality:
   variables:
     DOCKER_DRIVER: overlay2
     SP_VERSION: 0.85.6
-#    DOCKER_TLS_CERTDIR: ""
     CODE_QUALITY_IMAGE: "registry.gitlab.com/gitlab-org/ci-cd/codequality"
   script:
     - docker run
@@ -129,7 +128,7 @@ stop_review:
   tags:
     - shell
   script:
-    - echo "Remove images from runner"
+    - echo "Remove images and container from runner"
     - docker rmi tanuki.app:latest || true
     - docker stop reviewapp-demo-$CI_COMMIT_REF_NAME  || true
     - docker rm reviewapp-demo-$CI_COMMIT_REF_NAME  || true
