@@ -1,1 +1,25 @@
+code_quality:
+  stage: 🔐 test
+  image: docker:stable
+  allow_failure: true
+  services:
+    - docker:stable-dind
+  variables:
+    DOCKER_DRIVER: overlay2
+    SP_VERSION: 0.85.6
+    CODE_QUALITY_IMAGE: "registry.gitlab.com/gitlab-org/ci-cd/codequality"
+  script:
+    - docker run
+        --env SOURCE_CODE="$PWD"
+        --volume "$PWD":/code
+        --volume /var/run/docker.sock:/var/run/docker.sock
+        "$CODE_QUALITY_IMAGE:$SP_VERSION" /code
+  artifacts:
+    reports:
+      codequality: gl-code-quality-report.json
+    expire_in: 1 week
+  rules:
+    - if: '$CI_COMMIT_REF_NAME != "master" || $CI_COMMIT_REF_NAME == "master"'
+  tags:
+    - shell
 
