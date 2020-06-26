@@ -28,8 +28,9 @@ build:
   tags:
     - shell
     
+# include codequality (codeclimate) yml
 include:
-  - template: '/templates/codequality-template.yml'
+  - local: '/templates/codequality-template.yml'
 
 deploy_review:
   stage: ✅ review
